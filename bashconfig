@@ -1,17 +1,35 @@
 UNAME=`uname -s`
 
-# Source all files in the ~/.config/bash/autoload directory
-for f in ~/.config/bash/autoload/*; do source $f; done
+# Source all files in the ~/.dotmods/bash/autoload directory
+for f in ~/.dotmods/bash/autoload/*; do source $f; done
 
 # Set PATH
-export PATH=$(~/.config/bin/get-paths | tr '\n' ':')
+export PATH=$(~/.dotmods/bin/get-paths | tr '\n' ':')
 
 # Set aliases
 while read LINE; do eval "alias $LINE"; done < <(get-aliases =)
 
-# Set PS1 to ~/.config/bin/echo-ps1
-export PROMPT_COMMAND="export PS1=\$(~/.config/bin/echo-ps1 \$?)"
+# Set PS1 to ~/.dotmods/bin/echo-ps1
+export PROMPT_COMMAND="export PS1=\$(~/.dotmods/bin/echo-ps1 \$?)"
+
+function cd() { builtin cd "$@" && npm_chpwd_hook; }
+
+function npm_chpwd_hook() {
+  NPMPATH="$(npm bin)"
+
+  if [ -d "$NPMPATH" ]; then
+    PATH=$NPMPATH:$PRENPMPATH
+  else
+    PATH=$PRENPMPATH
+  fi
+
+  export PATH=$PATH
+}
+
+export PRENPMPATH=$PATH
+npm_chpwd_hook
 
 stty -ixon
 bind -r '\C-s'
-if [ -e /home/sean/.nix-profile/etc/profile.d/nix.sh ]; then . /home/sean/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+export PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
