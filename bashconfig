@@ -29,6 +29,10 @@ function npm_chpwd_hook() {
   export PATH=$PATH
 }
 
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell/base16-solarized.dark.sh"
+[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+
 if [ -e /home/seanstrom/.nix-profile/etc/profile.d/nix.sh ]; then . /home/seanstrom/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 # export PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
